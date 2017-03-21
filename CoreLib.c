@@ -60,9 +60,9 @@ void setArm(tMotor motorR, tMotor motorL, tSensors port,int down, int full,int n
   arm.holdCube=cube;
 }
 
-void setChassis(string side,tMotor motorport, tSensors sensorport, float kp, float ki, float kd, float integrallimit)
+void setChassis(char side,tMotor motorport, tSensors sensorport, float kp, float ki, float kd, float integrallimit)
 {
-  if(side=="R")
+  if(side==0)
   {
     chassisR.motorPort=motorport;
     chassisR.sensorPort=sensorport;
@@ -71,7 +71,7 @@ void setChassis(string side,tMotor motorport, tSensors sensorport, float kp, flo
     chassisR.kD=kd;
     chassisR.integralLimit=integrallimit;
   }
-  else if(side=="L")
+  else if(side==1)
   {
     chassisL.motorPort=motorport;
     chassisL.sensorPort=sensorport;
@@ -83,9 +83,9 @@ void setChassis(string side,tMotor motorport, tSensors sensorport, float kp, flo
   else {}
 }
 
-void setPincher(string side,tMotor motorport, tSensors sensorport,int openMV,int midMV,int closeMV)
+void setPincher(char side,tMotor motorport, tSensors sensorport,int openMV,int midMV,int closeMV)
 {
-  if(side=="R")
+  if(side==0)
   {
     pincherR.motorPort=motorport;
     pincherR.sensorPort=sensorport;
@@ -93,7 +93,7 @@ void setPincher(string side,tMotor motorport, tSensors sensorport,int openMV,int
     pincherR.mid=midmV;
     pincherR.close=closeMV;
   }
-  else if(side=="L")
+  else if(side==1)
   {
     pincherL.motorPort=motorport;
     pincherL.sensorPort=sensorport;
