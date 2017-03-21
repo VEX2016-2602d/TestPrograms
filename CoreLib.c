@@ -90,7 +90,7 @@ void setPincher(char side,tMotor motorport, tSensors sensorport,int openMV,int m
     pincherR.motorPort=motorport;
     pincherR.sensorPort=sensorport;
     pincherR.open=openMV;
-    pincherR.mid=midmV;
+    pincherR.mid=midMV;
     pincherR.close=closeMV;
   }
   else if(side==1)
@@ -98,7 +98,7 @@ void setPincher(char side,tMotor motorport, tSensors sensorport,int openMV,int m
     pincherL.motorPort=motorport;
     pincherL.sensorPort=sensorport;
     pincherL.open=openMV;
-    pincherL.mid=midmV;
+    pincherL.mid=midMV;
     pincherL.close=closeMV;
   }
   else {}
