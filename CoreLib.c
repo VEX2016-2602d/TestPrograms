@@ -570,5 +570,94 @@ void flashLED(int n)
 	}
 }
 
+task openPincher()
+{
+  while(SensorValue[pincherL.sensorPort] > pincherL.open  || SensorValue[pincherR.sensorPort] > pincherR.open)
+	{
+		int openIndexL = pCalc(pincherL.open, pincherL.sensorPort, 0.9);
+		int openIndexR = pCalc(pincherR.open, pincherR.sensorPort,0.9);
+
+		if(openIndexL < 20 || openIndexR <20)
+		{
+			break;
+		}
+
+		if(SensorValue[pincherL.sensorPort] > pincherL.open)
+		{
+			motor[pincherL.motorPort] = -openIndexL;
+		}
+
+		if(SensorValue[pincherR.sensorPort] > pincherR.open)
+		{
+			motor[pincherR] = -openIndexR;
+		}
+	}
+	pincherDrive(0);
+}
+
+task closePincher()
+{
+	int speedL;
+	int speedR;
+  int preReadL = pincherL.open-50;//ensure that we have a big speed at start so it won't trigger then break
+	int preReadR = pincherR.open-50;
+	int currentReadL;
+	int currentReadR;
+	int achievedCountL =0;
+	int achievedCountR =0;
+
+	while(SensorValue[pincherL.sensorPort] < pinhcerL.close || SensorValue[pincherL.sensorPort] < pinhcerR.close)
+	{
+		currentReadL = SensorValue[pincherL.sensorPort];
+		currentReadR = SensorValue[pincherR.sensorPort];
+
+		speedL = abs(currentReadL - preReadL);
+		speedR = abs(currentReadR - preReadR);
+
+		if(SensorValue[pincherL.sensorPort] < pinhcerL.close)
+		{
+			if(speedL>1)
+			{
+				motor[pinhcerL.motorPort] =125;
+			}
+			else
+			{
+				achievedCountL++;
+				motor[pinhcerL.motorPort] = 0;
+			}
+		}
+		else
+		{
+			motor[pinhcerL.motorPort] = 0;
+		}
+
+		if(SensorValue[pincherR.sensorPort] < pinhcerR.close)
+		{
+			if(speedR>1)
+			{
+				motor[pinhcerR.motorPort] =125;
+			}
+			else
+			{
+				achievedCountR++;
+				motor[pinhcerR.motorPort] = 0;
+			}
+		}
+		else
+		{
+			motor[pinhcerR.motorPort] = 0;
+		}
+
+		if(achievedCountL >1 && achievedCountR >1)
+		{
+			break;
+		}
+		preReadL = currentReadL;
+		preReadR = currentReadR;
+		wait1Msec(25);
+	}
+	pincherDrive(0);
+}
+
 
 #endif
