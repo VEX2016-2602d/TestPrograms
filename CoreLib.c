@@ -606,7 +606,7 @@ task closePincher()
 	int achievedCountL =0;
 	int achievedCountR =0;
 
-	while(SensorValue[pincherL.sensorPort] < pinhcerL.close || SensorValue[pincherL.sensorPort] < pinhcerR.close)
+	while(SensorValue[pincherL.sensorPort] < pinhcerL.close || SensorValue[pincherL.sensorPort] < pincherR.close)
 	{
 		currentReadL = SensorValue[pincherL.sensorPort];
 		currentReadR = SensorValue[pincherR.sensorPort];
@@ -614,38 +614,38 @@ task closePincher()
 		speedL = abs(currentReadL - preReadL);
 		speedR = abs(currentReadR - preReadR);
 
-		if(SensorValue[pincherL.sensorPort] < pinhcerL.close)
+		if(SensorValue[pincherL.sensorPort] < pincherL.close)
 		{
 			if(speedL>1)
 			{
-				motor[pinhcerL.motorPort] =125;
+				motor[pincherL.motorPort] =125;
 			}
 			else
 			{
 				achievedCountL++;
-				motor[pinhcerL.motorPort] = 0;
+				motor[pincherL.motorPort] = 0;
 			}
 		}
 		else
 		{
-			motor[pinhcerL.motorPort] = 0;
+			motor[pincherL.motorPort] = 0;
 		}
 
-		if(SensorValue[pincherR.sensorPort] < pinhcerR.close)
+		if(SensorValue[pincherR.sensorPort] < pincherR.close)
 		{
 			if(speedR>1)
 			{
-				motor[pinhcerR.motorPort] =125;
+				motor[pincherR.motorPort] =125;
 			}
 			else
 			{
 				achievedCountR++;
-				motor[pinhcerR.motorPort] = 0;
+				motor[pincherR.motorPort] = 0;
 			}
 		}
 		else
 		{
-			motor[pinhcerR.motorPort] = 0;
+			motor[pincherR.motorPort] = 0;
 		}
 
 		if(achievedCountL >1 && achievedCountR >1)
@@ -658,6 +658,5 @@ task closePincher()
 	}
 	pincherDrive(0);
 }
-
 
 #endif
