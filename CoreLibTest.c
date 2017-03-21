@@ -19,7 +19,13 @@
 #include "CoreLib.c"
 task main()
 {
-	setChassis(1,port8,dgtl11,0.3,0.00005,1,50);
+	setChassis(0,port8,dgtl11,0.3,0.0001,1,50);
+	setChassis(1,port9,dgtl9,0.3,0.0001,1,50);
+	setPincher(0,port2,in1,1050,1500,1800);
+	setPincher(1,port3,in2,1050,1550,1950);
+	//chassisPID(true,false,false,800);
+	autoClosePincher();
+	autoOpenPincher();
 
 
 }
