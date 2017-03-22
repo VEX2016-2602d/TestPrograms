@@ -606,7 +606,7 @@ task closePincher()
 	int achievedCountL =0;
 	int achievedCountR =0;
 
-	while(SensorValue[pincherL.sensorPort] < pinhcerL.close || SensorValue[pincherL.sensorPort] < pincherR.close)
+	while(SensorValue[pincherL.sensorPort] < pincherL.close || SensorValue[pincherR.sensorPort] < pincherR.close)
 	{
 		currentReadL = SensorValue[pincherL.sensorPort];
 		currentReadR = SensorValue[pincherR.sensorPort];
