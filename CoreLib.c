@@ -511,7 +511,7 @@ void autoArmDown()
 	armDrive(0);
 }
 
-void autoArmUp(char type)
+void autoArmUp()
 {
 	while(abs(SensorValue[arm.sensorPort])<arm.full)
 	{
@@ -523,7 +523,6 @@ void autoArmUp(char type)
 void autoArmHold(char type)
 {
 	int mv_armHold;
-
 	switch(type)
 	{
 		case 0:
