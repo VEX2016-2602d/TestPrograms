@@ -24,6 +24,8 @@ typedef struct
 {
   tMotor motorPortR;
   tMotor motorPortL;
+  tMotor motorPortR2;
+  tMotor motorPortL2;
   tSensors sensorPort;
   int down;
   int full;
@@ -51,6 +53,21 @@ void setArm(tMotor motorR, tMotor motorL, tSensors port,int down, int full,int n
 {
   arm.motorPortR = motorR;
   arm.motorPortL = motorL;
+  arm.sensorPort=port;
+  arm.down=down;
+  arm.full=full;
+  arm.holdNull=none;
+  arm.holdStar=star;
+  arm.hold3Stars=stars;
+  arm.holdCube=cube;
+}
+
+void setArm(tMotor motorR,tMotor motorR2,tMotor motorL,tMotor motorL2,tSensors port,int down, int full,int none,int star,int stars,int cube)
+{
+  arm.motorPortR = motorR;
+  arm.motorPortR2 = motorR2;
+  arm.motorPortL = motorL;
+  arm.motorPortL2 = motorL2;
   arm.sensorPort=port;
   arm.down=down;
   arm.full=full;
@@ -201,7 +218,6 @@ task gyroFilter()
       wait1Msec(15);
   }
 }
-
 
 void gyroTurn(int nDegree,int timeLimit)
 {
@@ -511,7 +527,7 @@ void autoArmDown()
 	armDrive(0);
 }
 
-void autoArmUp(char type)
+void autoArmUp()
 {
 	while(abs(SensorValue[arm.sensorPort])<arm.full)
 	{
@@ -523,7 +539,6 @@ void autoArmUp(char type)
 void autoArmHold(char type)
 {
 	int mv_armHold;
-
 	switch(type)
 	{
 		case 0:
