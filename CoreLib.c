@@ -1,5 +1,5 @@
-#ifndef _2602CORELIB_;
-#define _2602CORELIB_;
+#ifndef _CORELIB_;
+#define _CORELIB_;
 
 typedef struct
 {
@@ -18,6 +18,7 @@ typedef struct
   int open;
   int mid;
   int close;
+  bool ifHold;
 }clawData;
 
 typedef struct
@@ -100,7 +101,7 @@ void setChassis(char side,tMotor motorport, tSensors sensorport, float kp, float
   else {}
 }
 
-void setPincher(char side,tMotor motorport, tSensors sensorport,int openMV,int midMV,int closeMV)
+void setPincher(char side,tMotor motorport, tSensors sensorport,int openMV,int midMV,int closeMV,bool ifHold)
 {
   if(side==0)
   {
@@ -109,6 +110,7 @@ void setPincher(char side,tMotor motorport, tSensors sensorport,int openMV,int m
     pincherR.open=openMV;
     pincherR.mid=midMV;
     pincherR.close=closeMV;
+    pincherR.ifHold=ifHold;
   }
   else if(side==1)
   {
@@ -117,6 +119,7 @@ void setPincher(char side,tMotor motorport, tSensors sensorport,int openMV,int m
     pincherL.open=openMV;
     pincherL.mid=midMV;
     pincherL.close=closeMV;
+    pincherL.ifHold=ifHold;
   }
   else {}
 }
@@ -671,7 +674,12 @@ task closePincher()
 		preReadR = currentReadR;
 		wait1Msec(25);
 	}
-	pincherDrive(0);
+
+	while(pincherR.ifHold)
+	{
+		pincherDrive(20);
+	}
+
 }
 
 #endif
