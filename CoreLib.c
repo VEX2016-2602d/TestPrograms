@@ -617,12 +617,14 @@ task closePincher()
 {
 	int speedL;
 	int speedR;
-  int preReadL = pincherL.open-50;//ensure that we have a big speed at start so it won't trigger then break
+  int preReadL = pincherL.open-50;//ensure that we have a high speed at start so it won't trigger then break
 	int preReadR = pincherR.open-50;
 	int currentReadL;
 	int currentReadR;
 	int achievedCountL =0;
 	int achievedCountR =0;
+  pincherDrive(125);
+	wait1Msec(200);
 
 	while(SensorValue[pincherL.sensorPort] < pincherL.close || SensorValue[pincherR.sensorPort] < pincherR.close)
 	{
@@ -675,7 +677,7 @@ task closePincher()
 		wait1Msec(25);
 	}
 
-	while(pincherR.ifHold)
+	while(pincherR.ifHold && pincherL.ifHold)
 	{
 		pincherDrive(20);
 	}
