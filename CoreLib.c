@@ -128,6 +128,22 @@ void pincherDrive(int pincherspeed)
 	motor[pincherL.motorPort] = pincherspeed;
 }
 
+void chassisDrive(char side, int speed)//0==R, 1==L
+{
+  if(side==0)
+  {
+    motor[chassisR.motorPort]=speed;
+    motor[chassisR.motorPort2]=speed;
+  }
+  else if(side==1)
+  {
+    motor[chassisL.motorPort]=speed;
+    motor[chassisL.motorPort2]=speed;
+  }
+  else
+    return -1;
+}
+
 void resetChassisEncoders()
 {
 	SensorValue[chassisR.sensorPort]=0;
@@ -180,8 +196,7 @@ task gyroFilter()
     //if the angle speed smaller than 20/s than consider as a drift
     if( (nSysTime - nSysTimeOffset) > 250 )
       {
-        if( abs( gyro_Read - lastDriftGyro ) < 3
-        	)
+        if( abs( gyro_Read - lastDriftGyro ) < 3)
         {
           gyro_Error += (lastDriftGyro - gyro_Read);
         }
@@ -234,12 +249,14 @@ void gyroTurn(int nDegree,int timeLimit)
 		{
 		index = index;
 		}
-    motor[chassisL.motorPort] = index;
-    motor[chassisR.motorPort] = -index;
+    //motor[chassisL.motorPort] = index;
+    //motor[chassisR.motorPort] = -index;
+    chassisDrive(0,-index);
+    chassisDrive(1,index);
     wait1Msec(25);
   }
-  motor[chassisL.motorPort] = 0;
-  motor[chassisR.motorPort] = 0;
+  chassisDrive(0,0);
+  chassisDrive(1,0);
 }
 
 void gyroAdjustment(int nDegree)//counterclockwise is postive
@@ -259,23 +276,27 @@ void gyroAdjustment(int nDegree)//counterclockwise is postive
    		index = index;
    if(gyro1.angle>nDegree)
    {
-    motor[chassisL.motorPort] = index;
-    motor[chassisR.motorPort] = -index;
+    //motor[chassisL.motorPort] = index;
+    //motor[chassisR.motorPort] = -index;
+    chassisDrive(0,-index);
+    chassisDrive(1,index);
  		}
  		else if(gyro1.angle<nDegree)
  		{
- 		motor[chassisL.motorPort] = -index;
-    motor[chassisR.motorPort] = index;
+ 		//motor[chassisL.motorPort] = -index;
+    //motor[chassisR.motorPort] = index;
+    chassisDrive(0,index);
+    chassisDrive(1,-index);
  		}
  		else
  		{
- 		motor[chassisL.motorPort] = 0;
-    motor[chassisR.motorPort] = 0;
+    chassisDrive(0,0);
+    chassisDrive(1,0);
   	}
     wait1Msec(25);
   }
-  motor[chassisL.motorPort] = 0;
-  motor[chassisR.motorPort] = 0;
+  chassisDrive(0,0);
+  chassisDrive(1,0);
 }
 
 void chassisPID(bool forward,bool ifLift,bool ifHoldPincher,int target)
@@ -356,13 +377,17 @@ void chassisPID(bool forward,bool ifLift,bool ifHoldPincher,int target)
 
 		if(forward)
 		{
-      motor[chassisR.motorPort]=indexR;
-			motor[chassisL.motorPort]=indexL;
+      //motor[chassisR.motorPort]=indexR;
+			//motor[chassisL.motorPort]=indexL;
+      chassisDrive(0,indexR);
+      chassisDrive(1,indexL);
 		}
 		else
 		{
-			motor[chassisR.motorPort]=-indexR;
-			motor[chassisL.motorPort]=-indexL;
+			//motor[chassisR.motorPort]=-indexR;
+			//motor[chassisL.motorPort]=-indexL;
+      chassisDrive(0,-indexR);
+      chassisDrive(1,-indexL);
 		}
 
 		if(ifLift && errorR <180)
@@ -376,8 +401,8 @@ void chassisPID(bool forward,bool ifLift,bool ifHoldPincher,int target)
 		}
 		wait1Msec(25);
 	}
-	motor[chassisR.motorPort]=0;
-	motor[chassisL.motorPort]=0;
+  chassisDrive(0,0);
+  chassisDrive(1,0);
 }
 
 void autoOpenPincher()
