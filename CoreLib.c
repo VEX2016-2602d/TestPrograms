@@ -4,6 +4,7 @@
 typedef struct
 {
   tMotor motorPort;
+  tMotor motorPort2;
   tSensors sensorPort;
   float kP;
   float kI;
@@ -25,8 +26,6 @@ typedef struct
 {
   tMotor motorPortR;
   tMotor motorPortL;
-  tMotor motorPortR2;
-  tMotor motorPortL2;
   tSensors sensorPort;
   int down;
   int full;
@@ -63,26 +62,12 @@ void setArm(tMotor motorR, tMotor motorL, tSensors port,int down, int full,int n
   arm.holdCube=cube;
 }
 
-void setArm(tMotor motorR,tMotor motorR2,tMotor motorL,tMotor motorL2,tSensors port,int down, int full,int none,int star,int stars,int cube)
-{
-  arm.motorPortR = motorR;
-  arm.motorPortR2 = motorR2;
-  arm.motorPortL = motorL;
-  arm.motorPortL2 = motorL2;
-  arm.sensorPort=port;
-  arm.down=down;
-  arm.full=full;
-  arm.holdNull=none;
-  arm.holdStar=star;
-  arm.hold3Stars=stars;
-  arm.holdCube=cube;
-}
-
-void setChassis(char side,tMotor motorport, tSensors sensorport, float kp, float ki, float kd, float integrallimit)
+void setChassis(char side,tMotor motorport, tMotor motorport2,tSensors sensorport, float kp, float ki, float kd, float integrallimit)
 {
   if(side==0)
   {
     chassisR.motorPort=motorport;
+    chassisR.motorPort2=motorport2;
     chassisR.sensorPort=sensorport;
     chassisR.kP=kp;
     chassisR.kI=ki;
@@ -92,13 +77,14 @@ void setChassis(char side,tMotor motorport, tSensors sensorport, float kp, float
   else if(side==1)
   {
     chassisL.motorPort=motorport;
+    chassisL.motorPort2=motorport2;
     chassisL.sensorPort=sensorport;
     chassisL.kP=kp;
     chassisL.kI=ki;
     chassisL.kD=kd;
     chassisL.integralLimit=integrallimit;
   }
-  else {}
+  else {return -1}
 }
 
 void setPincher(char side,tMotor motorport, tSensors sensorport,int openMV,int midMV,int closeMV,bool ifHold)
