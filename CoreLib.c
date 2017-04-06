@@ -4,6 +4,7 @@
 typedef struct
 {
   tMotor motorPort;
+  tMotor motorPort2;
   tSensors sensorPort;
   float kP;
   float kI;
@@ -25,8 +26,6 @@ typedef struct
 {
   tMotor motorPortR;
   tMotor motorPortL;
-  tMotor motorPortR2;
-  tMotor motorPortL2;
   tSensors sensorPort;
   int down;
   int full;
@@ -63,26 +62,12 @@ void setArm(tMotor motorR, tMotor motorL, tSensors port,int down, int full,int n
   arm.holdCube=cube;
 }
 
-void setArm(tMotor motorR,tMotor motorR2,tMotor motorL,tMotor motorL2,tSensors port,int down, int full,int none,int star,int stars,int cube)
-{
-  arm.motorPortR = motorR;
-  arm.motorPortR2 = motorR2;
-  arm.motorPortL = motorL;
-  arm.motorPortL2 = motorL2;
-  arm.sensorPort=port;
-  arm.down=down;
-  arm.full=full;
-  arm.holdNull=none;
-  arm.holdStar=star;
-  arm.hold3Stars=stars;
-  arm.holdCube=cube;
-}
-
-void setChassis(char side,tMotor motorport, tSensors sensorport, float kp, float ki, float kd, float integrallimit)
+void setChassis(char side,tMotor motorport, tMotor motorport2,tSensors sensorport, float kp, float ki, float kd, float integrallimit)
 {
   if(side==0)
   {
     chassisR.motorPort=motorport;
+    chassisR.motorPort2=motorport2;
     chassisR.sensorPort=sensorport;
     chassisR.kP=kp;
     chassisR.kI=ki;
@@ -92,13 +77,14 @@ void setChassis(char side,tMotor motorport, tSensors sensorport, float kp, float
   else if(side==1)
   {
     chassisL.motorPort=motorport;
+    chassisL.motorPort2=motorport2;
     chassisL.sensorPort=sensorport;
     chassisL.kP=kp;
     chassisL.kI=ki;
     chassisL.kD=kd;
     chassisL.integralLimit=integrallimit;
   }
-  else {}
+  else {return -1}
 }
 
 void setPincher(char side,tMotor motorport, tSensors sensorport,int openMV,int midMV,int closeMV,bool ifHold)
@@ -140,6 +126,22 @@ void pincherDrive(int pincherspeed)
 {
 	motor[pincherR.motorPort] = pincherspeed;
 	motor[pincherL.motorPort] = pincherspeed;
+}
+
+void chassisDrive(char side, int speed)//0==R, 1==L
+{
+  if(side==0)
+  {
+    motor[chassisR.motorPort]=speed;
+    motor[chassisR.motorPort2]=speed;
+  }
+  else if(side==1)
+  {
+    motor[chassisL.motorPort]=speed;
+    motor[chassisL.motorPort2]=speed;
+  }
+  else
+    return -1;
 }
 
 void resetChassisEncoders()
@@ -194,8 +196,7 @@ task gyroFilter()
     //if the angle speed smaller than 20/s than consider as a drift
     if( (nSysTime - nSysTimeOffset) > 250 )
       {
-        if( abs( gyro_Read - lastDriftGyro ) < 3
-        	)
+        if( abs( gyro_Read - lastDriftGyro ) < 3)
         {
           gyro_Error += (lastDriftGyro - gyro_Read);
         }
@@ -248,12 +249,14 @@ void gyroTurn(int nDegree,int timeLimit)
 		{
 		index = index;
 		}
-    motor[chassisL.motorPort] = index;
-    motor[chassisR.motorPort] = -index;
+    //motor[chassisL.motorPort] = index;
+    //motor[chassisR.motorPort] = -index;
+    chassisDrive(0,-index);
+    chassisDrive(1,index);
     wait1Msec(25);
   }
-  motor[chassisL.motorPort] = 0;
-  motor[chassisR.motorPort] = 0;
+  chassisDrive(0,0);
+  chassisDrive(1,0);
 }
 
 void gyroAdjustment(int nDegree)//counterclockwise is postive
@@ -273,23 +276,27 @@ void gyroAdjustment(int nDegree)//counterclockwise is postive
    		index = index;
    if(gyro1.angle>nDegree)
    {
-    motor[chassisL.motorPort] = index;
-    motor[chassisR.motorPort] = -index;
+    //motor[chassisL.motorPort] = index;
+    //motor[chassisR.motorPort] = -index;
+    chassisDrive(0,-index);
+    chassisDrive(1,index);
  		}
  		else if(gyro1.angle<nDegree)
  		{
- 		motor[chassisL.motorPort] = -index;
-    motor[chassisR.motorPort] = index;
+ 		//motor[chassisL.motorPort] = -index;
+    //motor[chassisR.motorPort] = index;
+    chassisDrive(0,index);
+    chassisDrive(1,-index);
  		}
  		else
  		{
- 		motor[chassisL.motorPort] = 0;
-    motor[chassisR.motorPort] = 0;
+    chassisDrive(0,0);
+    chassisDrive(1,0);
   	}
     wait1Msec(25);
   }
-  motor[chassisL.motorPort] = 0;
-  motor[chassisR.motorPort] = 0;
+  chassisDrive(0,0);
+  chassisDrive(1,0);
 }
 
 void chassisPID(bool forward,bool ifLift,bool ifHoldPincher,int target)
@@ -370,13 +377,17 @@ void chassisPID(bool forward,bool ifLift,bool ifHoldPincher,int target)
 
 		if(forward)
 		{
-      motor[chassisR.motorPort]=indexR;
-			motor[chassisL.motorPort]=indexL;
+      //motor[chassisR.motorPort]=indexR;
+			//motor[chassisL.motorPort]=indexL;
+      chassisDrive(0,indexR);
+      chassisDrive(1,indexL);
 		}
 		else
 		{
-			motor[chassisR.motorPort]=-indexR;
-			motor[chassisL.motorPort]=-indexL;
+			//motor[chassisR.motorPort]=-indexR;
+			//motor[chassisL.motorPort]=-indexL;
+      chassisDrive(0,-indexR);
+      chassisDrive(1,-indexL);
 		}
 
 		if(ifLift && errorR <180)
@@ -390,8 +401,8 @@ void chassisPID(bool forward,bool ifLift,bool ifHoldPincher,int target)
 		}
 		wait1Msec(25);
 	}
-	motor[chassisR.motorPort]=0;
-	motor[chassisL.motorPort]=0;
+  chassisDrive(0,0);
+  chassisDrive(1,0);
 }
 
 void autoOpenPincher()
@@ -617,12 +628,14 @@ task closePincher()
 {
 	int speedL;
 	int speedR;
-  int preReadL = pincherL.open-50;//ensure that we have a big speed at start so it won't trigger then break
+  int preReadL = pincherL.open-50;//ensure that we have a high speed at start so it won't trigger then break
 	int preReadR = pincherR.open-50;
 	int currentReadL;
 	int currentReadR;
 	int achievedCountL =0;
 	int achievedCountR =0;
+  pincherDrive(125);
+	wait1Msec(200);
 
 	while(SensorValue[pincherL.sensorPort] < pincherL.close || SensorValue[pincherR.sensorPort] < pincherR.close)
 	{
@@ -675,7 +688,7 @@ task closePincher()
 		wait1Msec(25);
 	}
 
-	while(pincherR.ifHold)
+	while(pincherR.ifHold && pincherL.ifHold)
 	{
 		pincherDrive(20);
 	}

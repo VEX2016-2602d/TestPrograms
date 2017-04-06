@@ -44,8 +44,13 @@ void smartMotorSetUp()
 
 void pincherSetUp()
 {
+<<<<<<< HEAD:2602C Mk.W First Test.c
 	setPincher(0,port3,in1,3100,3000,3600,true);
 	setPincher(1,port2,in2,3200,3000,3650,true);
+=======
+	setPincher(0,port3,in1,2450,3000,3600,true);
+	setPincher(1,port2,in2,2550,3000,3650,true);
+>>>>>>> origin/master:2602C Mk.W Test.c
 }
 
 task main()
