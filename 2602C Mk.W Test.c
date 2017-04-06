@@ -1,6 +1,7 @@
 #pragma config(Sensor, in1,    degreeR,        sensorPotentiometer)
 #pragma config(Sensor, in2,    degreeL,        sensorPotentiometer)
 #pragma config(Sensor, in3,    backUpBattery,  sensorAnalog)
+#pragma config(Sensor, dgtl1,  ,               sensorQuadEncoder)
 #pragma config(Sensor, dgtl7,  encoderArm,     sensorQuadEncoder)
 #pragma config(Sensor, dgtl9,  encoderL,       sensorQuadEncoder)
 #pragma config(Sensor, dgtl11, encoderR,       sensorQuadEncoder)
@@ -33,10 +34,8 @@ void smartMotorSetUp()
 {
 	SmartMotorsInit();
 	SmartMotorsAddPowerExtender(_pincherL,_pincherR,_armL,_armR);
-	SmartMotorLinkMotors(_armL,_armR);
 	SmartMotorLinkMotors(_chassisL,_chassisL_M);
 	SmartMotorLinkMotors(_chassisR,_chassisR_M);
-	SmartMotorsSetEncoderGearing(_armL,5.0);
 	SmartMotorPtcMonitorEnable();
 	SmartMotorSetPowerExpanderStatusPort(in3);
 	SmartMotorRun();
@@ -44,13 +43,8 @@ void smartMotorSetUp()
 
 void pincherSetUp()
 {
-<<<<<<< HEAD:2602C Mk.W First Test.c
 	setPincher(0,port3,in1,3100,3000,3600,true);
 	setPincher(1,port2,in2,3200,3000,3650,true);
-=======
-	setPincher(0,port3,in1,2450,3000,3600,true);
-	setPincher(1,port2,in2,2550,3000,3650,true);
->>>>>>> origin/master:2602C Mk.W Test.c
 }
 
 task main()
@@ -59,12 +53,15 @@ task main()
 	pincherSetUp();
   while(true) // Space between while (true) deleted
   {
-    int _ch2=vexRT[Ch2];
-    int _ch3=vexRT[Ch3];
-    SetMotor(_chassisR,_ch2);
-    SetMotor(_chassisR_M,_ch2);
-    SetMotor(_chassisL,_ch3);
-    SetMotor(_chassisL_M,_ch3);
+    //int _ch2=vexRT[Ch2];
+    //int _ch3=vexRT[Ch3];
+    //motor[_chassisL]=_ch3;
+    //motor[_chassisL_M]=_ch3;
+    SetMotor(_chassisL,vexRT[Ch2]);
+    SetMotor(_chassisL_M,vexRT[Ch2]);
+    SetMotor(_chassisR,vexRT[Ch3]);
+    SetMotor(_chassisR_M,vexRT[Ch3]);
+
 
     if(vexRT[Btn6U] ==1)
     {
@@ -73,7 +70,7 @@ task main()
 
     else if(vexRT[Btn6D]==1)
     {
-      _armDrive(-100);
+      _armDrive(-120);
     }
 
     else

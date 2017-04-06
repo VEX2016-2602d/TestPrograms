@@ -84,7 +84,7 @@ void setChassis(char side,tMotor motorport, tMotor motorport2,tSensors sensorpor
     chassisL.kD=kd;
     chassisL.integralLimit=integrallimit;
   }
-  else {return -1}
+  else{}
 }
 
 void setPincher(char side,tMotor motorport, tSensors sensorport,int openMV,int midMV,int closeMV,bool ifHold)
@@ -141,7 +141,7 @@ void chassisDrive(char side, int speed)//0==R, 1==L
     motor[chassisL.motorPort2]=speed;
   }
   else
-    return -1;
+  {}
 }
 
 void resetChassisEncoders()
