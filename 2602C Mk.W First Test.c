@@ -44,8 +44,8 @@ void smartMotorSetUp()
 
 void pincherSetUp()
 {
-	setPincher(0,port3,in1,2300,3000,3600,true);
-	setPincher(1,port2,in2,2400,3000,3650,true);
+	setPincher(0,port3,in1,3100,3000,3600,true);
+	setPincher(1,port2,in2,3200,3000,3650,true);
 }
 
 task main()
