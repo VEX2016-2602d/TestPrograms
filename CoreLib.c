@@ -592,8 +592,8 @@ task openPincher()
 {
   while(SensorValue[pincherL.sensorPort] > pincherL.open  || SensorValue[pincherR.sensorPort] > pincherR.open)
 	{
-		int openIndexL = pCalc(pincherL.open, pincherL.sensorPort, 0.9);
-		int openIndexR = pCalc(pincherR.open, pincherR.sensorPort,0.9);
+		int openIndexL = pCalc(pincherL.open, pincherL.sensorPort, 0.15);
+		int openIndexR = pCalc(pincherR.open, pincherR.sensorPort,0.15);
 
 		if(openIndexL < 20 || openIndexR <20)
 		{
