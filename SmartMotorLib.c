@@ -168,7 +168,7 @@
 // parameters for vex 393 motor
 #define SMLIB_I_FREE_393        0.2
 #define SMLIB_I_STALL_393       4.8
-#define SMLIB_RPM_FREE_393      110
+#define SMLIB_RPM_FREE_393      100//According to VEX website, it is 100.
 #define SMLIB_R_393             (7.2/SMLIB_I_STALL_393)
 #define SMLIB_L_393             0.000650
 #define SMLIB_Ke_393            (7.2*(1-SMLIB_I_FREE_393/SMLIB_I_STALL_393)/SMLIB_RPM_FREE_393)
