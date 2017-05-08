@@ -601,24 +601,63 @@ void flashLED(int n)
 
 task openPincher()
 {
+	float indexR=0.0;
+	float indexL=0.0;
+
+	int errorL;
+	int preErrorL = pincherL.open;
+	int derivativeL;
+
+	int errorR;
+	int preErrorR = pincherR.open;
+	int derivativeR;
   while(SensorValue[pincherL.sensorPort] > pincherL.open  || SensorValue[pincherR.sensorPort] > pincherR.open)
 	{
-		int openIndexL = pCalc(pincherL.open, pincherL.sensorPort, 0.9);
-		int openIndexR = pCalc(pincherR.open, pincherR.sensorPort,0.9);
+		//int openIndexL = pCalc(pincherL.open, pincherL.sensorPort, 0.9);
+		//int openIndexR = pCalc(pincherR.open, pincherR.sensorPort,0.9);
+		errorL = SensorValue[pincherL.sensorPort]-pincherL.open;
+		errorR = SensorValue[pincherR.sensorPort]-pincherR.open;
 
-		if(openIndexL < 20 || openIndexR <20)
+		derivativeL = errorL - preErrorL;
+		derivativeR = errorR - preErrorR;
+
+		preErrorL = errorL;
+		preErrorR = errorR;
+
+		indexL = 1.2*errorL +0.35*derivativeL;
+		indexR = 1.2*errorR +0.35*derivativeR;
+
+		if(indexL < 20 || indexR <20)
 		{
 			break;
 		}
 
+		if(indexR > 125)//prevent overshot the motor
+		{
+			indexR = 125;
+		}
+		else
+		{
+			indexR = indexR;
+		}
+
+		if(indexL > 125)
+		{
+			indexL = 125;
+		}
+		else
+		{
+			indexL = indexL;
+		}
+
 		if(SensorValue[pincherL.sensorPort] > pincherL.open)
 		{
-			motor[pincherL.motorPort] = -openIndexL;
+			motor[pincherL.motorPort] = -indexL;
 		}
 
 		if(SensorValue[pincherR.sensorPort] > pincherR.open)
 		{
-			motor[pincherR] = -openIndexR;
+			motor[pincherR] = -indexR;
 		}
 	}
 	pincherDrive(0);
@@ -635,7 +674,7 @@ task closePincher()
 	int achievedCountL =0;
 	int achievedCountR =0;
   pincherDrive(125);
-	wait1Msec(200);
+	wait1Msec(500);
 
 	while(SensorValue[pincherL.sensorPort] < pincherL.close || SensorValue[pincherR.sensorPort] < pincherR.close)
 	{
@@ -647,7 +686,7 @@ task closePincher()
 
 		if(SensorValue[pincherL.sensorPort] < pincherL.close)
 		{
-			if(speedL>1)
+			if(speedL>0)
 			{
 				motor[pincherL.motorPort] =125;
 			}
@@ -664,7 +703,7 @@ task closePincher()
 
 		if(SensorValue[pincherR.sensorPort] < pincherR.close)
 		{
-			if(speedR>1)
+			if(speedR>0)
 			{
 				motor[pincherR.motorPort] =125;
 			}
@@ -687,12 +726,6 @@ task closePincher()
 		preReadR = currentReadR;
 		wait1Msec(25);
 	}
-
-	while(pincherR.ifHold && pincherL.ifHold)
-	{
-		pincherDrive(20);
-	}
-
 }
 
 #endif
